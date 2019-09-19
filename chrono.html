@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Chronomètre</title>
+        <link 
+            rel="stylesheet" 
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+            crossorigin="anonymous"
+        >
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="py-md-3 text-center" style="font-size: 500%;"><i>TopChrono!</i></h1>
+            <div class="row py-md-3">
+                <div class="col col-md-12 py-md-3">
+                    <div class="card">
+                        <div class="card-body text-center" style="font-size: 1000%;">
+                            <span id="min">00</span>:<span id="sec">00</span>:<span id="msec">00</span>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+            <div class="row py-md-3">
+                <div class="col col-md">
+                    <button id="startstop" type="button" class="btn btn-success btn-block btn-lg" style="font-size: 500%;">Start</button>
+                </div>
+                <div class="col col-md">
+                    <button id="reset" type="button" class="btn btn-danger btn-block btn-lg" style="font-size: 500%;">Reset</button>
+                </div>
+    
+            </div>
+        </div>
+        
+        
+
+    </body>
+    <script 
+        src="https://code.jquery.com/jquery-3.4.1.min.js" 
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous">
+    </script>
+    <script 
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
+        crossorigin="anonymous">
+    </script>
+    <script>
+        var startTime = 0;
+        var start = 0;
+        var end = 0;
+        var diff = 0;
+        var timerID = 0;
+        var startstop = true;
+        var msec = 0;
+        var sec = 0;
+        var min = 0;
+        function chrono(){
+            end = new Date();
+            diff = end - start;
+            diff = new Date(diff);
+            msec = diff.getMilliseconds();
+            sec = diff.getSeconds();
+            min = diff.getMinutes();
+            if (min < 10){
+                min = "0" + min;
+            }
+            if (sec < 10){
+                sec = "0" + sec;
+            }
+            if(msec < 10){
+                msec = "00" +msec;
+            }
+            else if(msec < 100){
+                msec = "0" +msec;
+            }
+            $("#min").text(min);
+            $("#sec").text(sec);
+            $("#msec").text(msec);
+            timerID = setTimeout("chrono()", 10);
+        }
+
+        $("#startstop").click(function(){
+            if (startstop === true){
+                startstop = false;
+                if (msec === 0 && sec === 0 && min === 0){
+                    chronoStart();
+                }
+                else {
+                    chronoContinue();
+                }
+            }
+            else {
+                startstop = true;
+                chronoStop();
+            }
+        });
+
+        $("#reset").click(function(){
+            chronoStopReset();
+        });
+
+        function chronoStart(){
+            $("#startstop").text("Stop");
+            $("#reset").attr("disabled", true);
+            $("#startstop").attr("class", "btn btn-warning btn-block btn-lg");
+            start = new Date();
+            console.log(start);
+            chrono();
+        }
+        function chronoContinue(){
+            $("#startstop").text("Stop");
+            $("#reset").attr("disabled", true);
+            $("#startstop").attr("class", "btn btn-warning btn-block btn-lg");
+            start = new Date()-diff;
+            start = new Date(start);
+            chrono();
+        }
+        function chronoStopReset(){
+            $("#min").text("00");
+            $("#sec").text("00");
+            $("#msec").text("000");
+            min = 0;
+            sec = 0;
+            msec = 0;
+        }
+        function chronoStop(){
+            $("#startstop").text("Start");
+            $("#reset").attr("disabled", false);
+            $("#startstop").attr("class", "btn btn-success btn-block btn-lg");
+            clearTimeout(timerID);
+        }
+    
+    </script>
